@@ -1,0 +1,64 @@
+-- 🎵 Music App Reviews Project
+-- Author: Rishi Alva | https://www.linkedin.com/in/rishialva
+-- Dataset: app_store_music_reviews.csv (columns: app, country, title, review, rating, date)
+
+-- 📦 SQL Table Creation
+DROP TABLE IF EXISTS reviews;
+
+CREATE TABLE reviews (
+    app TEXT,
+    country TEXT,
+    title TEXT,
+    review TEXT,
+    rating INTEGER,
+    date TIMESTAMP
+);
+
+-- ✅ 1. Count of Reviews by App
+-- Shows which apps received the most reviews
+SELECT app, COUNT(*) AS total_reviews
+FROM reviews
+GROUP BY app
+ORDER BY total_reviews DESC;
+
+-- ✅ 2. Average Rating per App
+-- Compares average user satisfaction across apps
+SELECT app, ROUND(AVG(rating), 2) AS avg_rating
+FROM reviews
+GROUP BY app
+ORDER BY avg_rating DESC;
+
+-- ✅ 3. Average Rating by Country
+-- Identifies regional satisfaction trends
+SELECT country, ROUND(AVG(rating), 2) AS avg_rating, COUNT(*) AS total_reviews
+FROM reviews
+GROUP BY country
+HAVING COUNT(*) > 10
+ORDER BY avg_rating DESC;
+
+-- ✅ 4. Reviews with Lowest Ratings
+-- Spotlights most recent negative reviews
+SELECT app, title, rating, review, date
+FROM reviews
+WHERE rating = 1
+ORDER BY date DESC
+LIMIT 10;
+
+-- ✅ 5. Monthly Review Trend for Spotify
+-- Tracks review volume over time
+SELECT FORMAT_DATE('%Y-%m', DATE(date)) AS month, COUNT(*) AS review_count
+FROM reviews
+WHERE app = 'Spotify'
+GROUP BY month
+ORDER BY month;
+
+-- 📊 OBSERVATIONS (for GitHub readme or markdown docs)
+--
+-- 1. Spotify received the highest number of reviews overall
+-- 2. Apple Music and Spotify have similar average ratings
+-- 3. Mexican users (MX) generally gave higher ratings than US users
+-- 4. Common complaints in 1-star reviews include:
+--    - Paywalls for downloads
+--    - Missing catalog content
+--    - App stability issues
+-- 5. Monthly spikes in reviews may align with app updates or holidays
