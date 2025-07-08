@@ -1,0 +1,90 @@
+-- ----------------------------------------------------
+-- 🧠 Project: Pokémon Multi-Platform Stat Analysis
+-- Author: Rishi Alva | https://www.linkedin.com/in/rishialva
+-- Dataset Source: https://www.kaggle.com/abcsds/pokemon
+-- ----------------------------------------------------
+
+-- 📦 TABLE CREATION
+DROP TABLE IF EXISTS pokemon;
+
+CREATE TABLE pokemon (
+    id INTEGER,
+    name TEXT,
+    type_1 TEXT,
+    type_2 TEXT,
+    total INTEGER,
+    hp INTEGER,
+    attack INTEGER,
+    defense INTEGER,
+    sp_atk INTEGER,
+    sp_def INTEGER,
+    speed INTEGER,
+    generation INTEGER,
+    legendary BOOLEAN
+);
+
+-- 💡 LOAD DATA
+-- Make sure to import the dataset (Pokemon.csv) using your DB tool
+-- into the `pokemon` table after this table is created
+
+-- ----------------------------------------------------
+-- 🔍 ANALYTICS
+-- ----------------------------------------------------
+
+-- 1️⃣ Top 10 Pokémon by Total Stats
+-- These are the strongest Pokémon based on total base stats
+SELECT name, total
+FROM pokemon
+ORDER BY total DESC
+LIMIT 10;
+
+-- 2️⃣ Count of Pokémon by Primary Type
+-- See which primary types are most common
+SELECT type_1, COUNT(*) AS count
+FROM pokemon
+GROUP BY type_1
+ORDER BY count DESC;
+
+-- 3️⃣ Average Stats by Generation
+-- Discover how different generations compare in average stat categories
+SELECT generation,
+       ROUND(AVG(hp), 1) AS avg_hp,
+       ROUND(AVG(attack), 1) AS avg_attack,
+       ROUND(AVG(defense), 1) AS avg_defense,
+       ROUND(AVG(sp_atk), 1) AS avg_sp_atk,
+       ROUND(AVG(sp_def), 1) AS avg_sp_def,
+       ROUND(AVG(speed), 1) AS avg_speed
+FROM pokemon
+GROUP BY generation
+ORDER BY generation;
+
+-- 4️⃣ Legendary vs Non-Legendary Stats
+-- Do legendary Pokémon actually perform better?
+SELECT legendary,
+       COUNT(*) AS count,
+       ROUND(AVG(total), 1) AS avg_total,
+       ROUND(AVG(speed), 1) AS avg_speed
+FROM pokemon
+GROUP BY legendary;
+
+-- 5️⃣ Fastest Pokémon
+-- Top 5 Pokémon by base speed stat
+SELECT name, speed
+FROM pokemon
+ORDER BY speed DESC
+LIMIT 5;
+
+-- ----------------------------------------------------
+-- 📊 OBSERVATIONS (Markdown-style for GitHub readme)
+-- ----------------------------------------------------
+
+-- ## Observations
+-- - 🔝 Mega Evolutions and Legendaries dominate the top stat list
+-- - 💧 Water is the most common type, followed by Normal and Grass
+-- - 📈 Later generations (Gen 3+) introduced more balanced stat averages
+-- - 🌟 Legendary Pokémon have an average Total over 600
+-- - ⚡ The fastest Pokémon include Deoxys and Ninjask
+
+-- ----------------------------------------------------
+-- ✅ END OF PROJECT
+-- ----------------------------------------------------
