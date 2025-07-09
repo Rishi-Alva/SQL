@@ -1,0 +1,121 @@
+SOURCE pokemon_schema_mysql.sql;
+
+LOAD DATA INFILE '/path/to/pokemon_cleaned_for_mysql.csv'
+INTO TABLE Pokemon
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+# Top 10 Pokémon by Total Stats
+
+SELECT name, total
+FROM Pokemon
+ORDER BY total DESC
+LIMIT 10;
+
+# Count of Pokémon by Type 1
+
+SELECT type_1, COUNT(*) AS count
+FROM Pokemon
+GROUP BY type_1
+ORDER BY count DESC;
+
+# Average Stats by Generation
+
+SELECT generation,
+       AVG(hp) AS avg_hp,
+       AVG(attack) AS avg_attack,
+       AVG(defense) AS avg_defense,
+       AVG(speed) AS avg_speed
+FROM Pokemon
+GROUP BY generation
+ORDER BY generation;
+
+# Legendary Pokémon Percentage
+
+SELECT 
+  (SUM(CASE WHEN legendary = TRUE THEN 1 ELSE 0 END) / COUNT(*)) * 100 AS legendary_percentage
+FROM Pokemon;
+
+# Pokémon With Dual Types
+
+SELECT COUNT(*) AS dual_type_pokemon
+FROM Pokemon
+WHERE type_2 <> 'None';
+
+# Strongest Pokémon by Type
+
+SELECT type_1, name, total
+FROM Pokemon AS p1
+WHERE total = (
+    SELECT MAX(total)
+    FROM Pokemon AS p2
+    WHERE p1.type_1 = p2.type_1
+)
+ORDER BY total DESC;
+
+# ER Diagram
+
+Pokemon Table
+-------------
+| id          | INT (PK)      |
+| name        | VARCHAR       |
+| type_1      | VARCHAR       |
+| type_2      | VARCHAR       |
+| total       | INT           |
+| hp          | INT           |
+| attack      | INT           |
+| defense     | INT           |
+| sp_atk      | INT           |
+| sp_def      | INT           |
+| speed       | INT           |
+| generation  | INT           |
+| legendary   | BOOLEAN       |
+
+## README ##
+
+# 🐬 MySQL Project: Pokémon Data Analysis
+
+This project uses MySQL to store and analyze a cleaned dataset of Pokémon stats. It demonstrates data loading, schema creation, and common analytics queries using SQL.
+
+## 📁 Project Files
+- `pokemon_schema_mysql.sql` — SQL script to create the database and table
+- `pokemon_cleaned_for_mysql.csv` — Cleaned data for import
+- `pokemon_queries.sql` — Sample SQL queries for analysis
+
+## 🗃️ Table Schema
+
+| Column      | Type      | Description                 |
+|-------------|-----------|-----------------------------|
+| id          | INT       | Primary key, Pokémon ID     |
+| name        | VARCHAR   | Pokémon name                |
+| type_1      | VARCHAR   | Primary type                |
+| type_2      | VARCHAR   | Secondary type (if any)     |
+| total       | INT       | Overall stat total          |
+| hp          | INT       | Hit Points                  |
+| attack      | INT       | Physical attack stat        |
+| defense     | INT       | Physical defense stat       |
+| sp_atk      | INT       | Special attack stat         |
+| sp_def      | INT       | Special defense stat        |
+| speed       | INT       | Speed stat                  |
+| generation  | INT       | Generation released         |
+| legendary   | BOOLEAN   | Whether it's Legendary      |
+
+## 📊 Sample SQL Queries
+
+- Top 10 strongest Pokémon
+- Average stats by generation
+- Pokémon type distribution
+- Legendary Pokémon breakdown
+
+## 💡 Why MySQL?
+
+This project demonstrates:
+- Relational data storage
+- Querying large structured datasets
+- Real-world applications of aggregation, filtering, and analytics using SQL
+
+---
+
+📌 Load the data, run some queries, and explore the insights hidden in your favorite Pokémon!
